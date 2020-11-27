@@ -1,6 +1,8 @@
 package GameObject;
 import java.awt.Graphics;
 import java.util.Random;
+import java.sql.Timestamp;
+
 
 import Systems.GameManager;
 
@@ -34,8 +36,23 @@ public class SpawnManager extends GameObject {
 	void spawnObstacle() {
 		timer += GameManager.getDeltaTime(); //add time elapsed per frame to timer
 		if (timer >= spawnTime) {
-			
+
+
 			//TODO make it randomize coin flip between spawning a stationary vs jumping
+			// using timeStamp to generate random value
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());	
+			randVal = timestamp.getTime();
+
+			if(randVal % 2 == 0){
+				spawnStationaryObstacle();
+			}
+			else{
+				spawnJumpingObstacle();
+			}
+
+
+
+			
 			spawnStationaryObstacle();
 			
 			int min = (int)(spawnMinTime * 100);
