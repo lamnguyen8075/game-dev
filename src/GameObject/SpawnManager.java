@@ -20,7 +20,7 @@ public class SpawnManager extends GameObject {
 	private static final int LARGE_OBSTACLE_WIDTH = 50, LARGE_OBSTACLE_HEIGHT = 100;
 	
 	private static final int JUMPING_OBSTACLE_WIDTH = 25, JUMPING_OBSTACLE_HEIGHT = 50;
-	
+	private static final int CLOUD_WIDTH = 20, CLOUD_HEIGHT = 30;
 	public SpawnManager()
 	{
 		rand = new Random();
@@ -29,6 +29,7 @@ public class SpawnManager extends GameObject {
 	@Override
 	public void update() {
 		spawnObstacle();
+		spawnCloud(); //just added for 
 	}
 	
 	void spawnObstacle() {
@@ -59,6 +60,17 @@ public class SpawnManager extends GameObject {
 	{
 		new JumpingObstacle(JUMPING_OBSTACLE_WIDTH, JUMPING_OBSTACLE_HEIGHT);
 	}
+
+	void spawnCloud() {
+		//spawnCloud() to spawn every 5 seconds new Cloud()
+		int timer = (int)(spawnMaxTime * 100);
+		int cloudSpawn = timer;
+		if(--cloudSpawn == 0) {
+			cloudSpawn = timer;
+			new SpawnClouds(CLOUD_WIDTH,CLOUD_HEIGHT);
+		}
+	
+ 	}
 
 	@Override //displays nothing, invisible GameObject
 	public void display(Graphics g) {}
