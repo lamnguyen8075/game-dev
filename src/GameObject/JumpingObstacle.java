@@ -1,5 +1,6 @@
 package GameObject;
 import java.awt.Graphics;
+import Systems.GameManager;
 
 /** This GameObject will be a bouncing obstacle 
  *  that constantly jumps up and down on the ground
