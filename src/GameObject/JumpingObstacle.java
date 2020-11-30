@@ -9,7 +9,7 @@ import Systems.GameManager;
  *  TODO implement the behavior to make this class a bouncing obstacle
  *  Refer to the Player class on how to jump
  */
-public class JumpingObstacle extends Obstacle implements KeyListener {
+public class JumpingObstacle extends Obstacle {
 
 	private static final float JUMPFORCE = 1650; 					//yVelocity initial speed upon jump
 	private static final float GRAVITY = -6000; 
