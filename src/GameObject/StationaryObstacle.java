@@ -2,11 +2,14 @@ package GameObject;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import Systems.GameManager;
 
 public class StationaryObstacle extends Obstacle {
 
+	private BufferedImage sprites[];
+	
 	public StationaryObstacle(int width, int height) {
 		super(width, height);
 	}

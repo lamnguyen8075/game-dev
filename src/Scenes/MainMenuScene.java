@@ -1,9 +1,15 @@
 package Scenes;
-import javax.swing.JPanel;
+import GameObject.ScoreText;
+import GameObject.StartButton;
 
 //TODO implement the panel's paint behaviour 
 //TODO implement the start button
 //TODO implement the quit button
-public class MainMenuScene extends JPanel {
-
+public class MainMenuScene{
+	
+	public MainMenuScene()
+	{
+		new StartButton();
+		new ScoreText();
+	}
 }

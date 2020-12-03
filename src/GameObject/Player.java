@@ -3,8 +3,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 
 import Systems.GameManager;
+import Utility.LoadImage;
 /**
  * @author Bao
 Main Responsibilities
@@ -20,26 +22,45 @@ public class Player extends GameObject implements KeyListener {
 	public static float getY() { return y; }
 	private static final float JUMPFORCE = 1650; //yVelocity initial speed upon jump
 	private static final float GRAVITY = -6000; 
-	
-	public static final int WIDTH = 40, HEIGHT = 75;
+	     
+	public static final int WIDTH = 96, HEIGHT = 112;
 	private static float x = 50, y = GameManager.GROUND_POSITION; //player coordinates
 	private float yVel = 0; //player's Y speed
+	float timer = 0, spriteUpdateTime = 0.1f;
+	
+	private BufferedImage sprites[] = new BufferedImage[6];
+	private int currentSprite = 0;
+	
+	public Player()
+	{
+		for (int i = 0; i < sprites.length; i++)
+			sprites[i] = LoadImage.loadImage("image/player" + i + ".png");
+	}
 	
 	@Override //do nothing
 	public void keyReleased(KeyEvent arg0) {}
 
 	@Override //do nothing
 	public void keyTyped(KeyEvent arg0) {}
-	   
+	     
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_SPACE)
-			jump();
+			jump();		
 	}
-	
+
 	//update gets called every frame
 	public void update() {
 		gravity(); 
+		timer += GameManager.getDeltaTime();
+		
+		if (timer > spriteUpdateTime)
+		{
+			timer -= spriteUpdateTime;
+			currentSprite++;
+			if (currentSprite >= sprites.length)
+				currentSprite -= sprites.length;
+		}
 	}
 	
 	void jump()
@@ -64,8 +85,6 @@ public class Player extends GameObject implements KeyListener {
 	
 	//render player 
 	public void display(Graphics g) {
-		g.drawRect((int)x, (int)y, WIDTH, HEIGHT);
-		g.setColor(Color.black);
-		g.fillRect((int)x, (int)y, WIDTH, HEIGHT);
+		g.drawImage(sprites[currentSprite], (int)x, (int)y, WIDTH, HEIGHT, null);
 	}
 }

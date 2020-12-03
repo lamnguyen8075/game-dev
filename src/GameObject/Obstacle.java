@@ -1,7 +1,5 @@
 package GameObject;
-
-import java.awt.Graphics;
-
+import Scenes.MainMenuScene;
 import Systems.GameManager;
 
 /**
@@ -12,6 +10,7 @@ public abstract class Obstacle extends GameObject
 {
 	protected int x, y, width, height; 
 	abstract void move();
+
 	
 	public Obstacle(int width, int height) {
 		this.width = width;
@@ -39,8 +38,11 @@ public abstract class Obstacle extends GameObject
 	{
 		if (withinXRange() && withinYRange())
 		{
-			//TODO: switch the panels
-			GameManager.gameIsRunning = false;
+			//TODO: switch to the main game panel
+			GameManager.resetScene();
+//			GameManager.setInGameScene(false);
+			new MainMenuScene();
+//			GameManager.gameIsRunning = false;
 		}
 	}
 	
@@ -51,7 +53,6 @@ public abstract class Obstacle extends GameObject
 		
 		float playerLeftEdge = Player.getX();
 		float playerRightEdge = Player.getX() + Player.WIDTH;
-
 		
 		if (obstacleLeftEdge <= playerRightEdge && obstacleRightEdge >= playerLeftEdge)
 			return true;
@@ -62,7 +63,6 @@ public abstract class Obstacle extends GameObject
 	{
 		float obstacleTopEdge = y;
 		float obstacleBotEdge = y + height;
-		
 		float playerTopEdge = Player.getY();
 		float playerBotEdge = Player.getY() + Player.HEIGHT;
 		

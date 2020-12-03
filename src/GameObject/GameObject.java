@@ -17,6 +17,7 @@ public abstract class GameObject {
 	public GameObject() {
 		uid = UniqueIDGenerator.getID();
 		GameManager.addGameObject(this, uid);
+		GameManager.addListener(this);
 	}
 	 
 	// Called once per frame by internal GameManager loop
@@ -28,6 +29,7 @@ public abstract class GameObject {
 	//removes current GameObject from the update thread for garbage collection to take over
 	public void destroy() {
 		GameManager.removeGameObject(this, uid);
+		GameManager.removeListener(this);
 	}
 	
 	public int getUID()

@@ -1,18 +1,23 @@
 package Systems;
 
 import java.awt.Dimension;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.awt.*;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import GameObject.GameObject;
 import GameObject.Obstacle;
 import GameObject.Player;
 import GameObject.SpawnManager;
 import Scenes.GameScene;
+import Scenes.MainMenuScene;
+import Scenes.Scene;
 
 /**
  * @author Bao
@@ -34,7 +39,7 @@ public class GameManager extends JFrame implements Runnable{
 	public static int getScrollSpeed() { return scrollSpeed; }
 	public static final int GROUND_POSITION = 600; 
 	
-	public static Map<GameObject, Integer> gameObjects; //list every single GameObject to be updated 
+	private static Map<GameObject, Integer> gameObjects; //list every single GameObject to be updated 
 	private static Map<GameObject, Integer> addQueue;    //queue to add after every update frame
 	private static Map<GameObject, Integer> removeQueue; //queue to remove after every update frame
 	private static double deltaTime; //time elapsed per frame
@@ -42,17 +47,20 @@ public class GameManager extends JFrame implements Runnable{
 	private static int scrollSpeed = 700; //Game moves at a pace of 700 pixels per unit
 	private int fps = 60; //cap
 	private Thread thread;
+	private static boolean inGameScene = false;
+	
+	public static GameManager instance;
 	
 	public static boolean gameIsRunning = true;
 	
 	public static void main(String[] args) {
 		new GameManager();
-		new SpawnManager();
 	}
 	
 	public GameManager()
 	{	
 		super("Endless Runner"); //title
+		instance = this;
 		setSize(PIXEL_WIDTH, PIXEL_HEIGHT);
 		
 		gameObjects = new HashMap<GameObject, Integer>(); 
@@ -65,19 +73,24 @@ public class GameManager extends JFrame implements Runnable{
 		int heightLocation = (int)(screenSize.getHeight() - PIXEL_HEIGHT)/2;
 		setLocation(widthLocation, heightLocation);
 		
+		//GameWindow defaults
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setResizable(false);
+		setResizable(false); 
 		setVisible(true);
-		
-		GameScene gameScene = new GameScene();
-		add(gameScene);
+		       
+		//appending the game scene as the active panel
+		add(new Scene());
+		new MainMenuScene();
 		thread = new Thread(this);
 		thread.start();
-		
-		Player p = new Player();
-		addKeyListener(p);
 	}
 	
+	public static void setInGameScene(boolean gameScene)
+	{
+		inGameScene = gameScene;
+		if (inGameScene)
+			time = 0;
+	}
 	
 	public static void addGameObject(GameObject g, int uid)
 	{
@@ -92,6 +105,28 @@ public class GameManager extends JFrame implements Runnable{
 	public static Set<GameObject> getAllGameObjects() 
 	{
 		return GameManager.gameObjects.keySet();
+	}
+	
+	public static <T> void addListener(T k)
+	{
+		if (k instanceof KeyListener)
+			instance.addKeyListener((KeyListener) k);
+		else if (k instanceof MouseListener)
+			instance.addMouseListener((MouseListener) k);
+	}
+	
+	public static <T> void removeListener(T k)
+	{
+		if (k instanceof KeyListener)
+			instance.removeKeyListener((KeyListener) k);
+		else if (k instanceof MouseListener)
+			instance.removeMouseListener((MouseListener) k);
+	}
+	
+	public static void resetScene()
+	{
+		for (GameObject g : gameObjects.keySet())
+			g.destroy();
 	}
 
 	// The thread running the game loop emulating a call every frame
@@ -112,15 +147,17 @@ public class GameManager extends JFrame implements Runnable{
 			repaint(); //render from active Panel
 
 			try {
-				Thread.sleep(1000/fps); //wait for 1 frame, sleep has slight inaccuracies
+				Thread.sleep(1000/fps); //wait the duration of one frame with targeted fps, sleep has slight inaccuracies
 			}
 			catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			
+			
 			updateTime = (System.nanoTime() - initialTime); //time after waiting 
 			deltaTime = (updateTime - curTime) /1_000_000_000.00; //elapsed waiting time in seconds
-			time += deltaTime; //total time
+			if (inGameScene)
+				time += deltaTime; //total time
 		}
 	}
 	
@@ -131,7 +168,7 @@ public class GameManager extends JFrame implements Runnable{
 			gameObjects.put(g, g.getUID());
 		addQueue.clear();
 		for (GameObject g : removeQueue.keySet())
-			gameObjects.put(g, g.getUID());
+			gameObjects.remove(g, g.getUID());
 		removeQueue.clear();
 	}
 }
