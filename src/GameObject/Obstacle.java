@@ -40,7 +40,7 @@ public abstract class Obstacle extends GameObject
 		{
 			//TODO: switch to the main game panel
 			GameManager.resetScene();
-//			GameManager.setInGameScene(false);
+			GameManager.setInGameScene(false);
 			new MainMenuScene();
 //			GameManager.gameIsRunning = false;
 		}

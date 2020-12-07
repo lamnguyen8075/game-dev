@@ -29,7 +29,7 @@ public class Player extends GameObject implements KeyListener {
 	float timer = 0, spriteUpdateTime = 0.1f;
 	
 	private BufferedImage sprites[] = new BufferedImage[6];
-	private int currentSprite = 0;
+	private int spriteIndex = 0;
 	
 	public Player()
 	{
@@ -57,9 +57,9 @@ public class Player extends GameObject implements KeyListener {
 		if (timer > spriteUpdateTime)
 		{
 			timer -= spriteUpdateTime;
-			currentSprite++;
-			if (currentSprite >= sprites.length)
-				currentSprite -= sprites.length;
+			spriteIndex++;
+			if (spriteIndex >= sprites.length)
+				spriteIndex -= sprites.length;
 		}
 	}
 	
@@ -85,6 +85,6 @@ public class Player extends GameObject implements KeyListener {
 	
 	//render player 
 	public void display(Graphics g) {
-		g.drawImage(sprites[currentSprite], (int)x, (int)y, WIDTH, HEIGHT, null);
+		g.drawImage(sprites[spriteIndex], (int)x, (int)y, WIDTH, HEIGHT, null);
 	}
 }
