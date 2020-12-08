@@ -8,8 +8,7 @@ import Utility.LoadImage;
 
 /** This GameObject will be a bouncing obstacle 
  *  that constantly jumps up and down on the ground
- *  TODO add the necessary variables for jump velocity force & gravity
- *  TODO implement the behavior to make this class a bouncing obstacle
+ *  implement the behavior to make this class a bouncing obstacle
  *  Refer to the Player class on how to jump
  */
 public class JumpingObstacle extends Obstacle {
@@ -22,21 +21,32 @@ public class JumpingObstacle extends Obstacle {
 	private float spriteSwapInterval = .05f, timer = 0;
 	BufferedImage sprites[] = new BufferedImage[8];
 	private int spriteIndex = 0;
-
+	
+	/**
+	 * Constructor of the JumpingObstacle class
+	 * loading the Obstacle's animation
+	 * @param width - width of the jumping obstacle
+	 * @param height - height of the jumping obstacle
+	 */
 	public JumpingObstacle(int width, int height) {
 		super(width, height);
 		for (int i = 0; i < sprites.length; i++)
 			sprites[i] = LoadImage.loadImage("image/bat" + i + ".png");
 	}
 	
-	//TODO implement update to work with the jump method
+	
+	/**
+	 * An override method that get called once per frame,
+	 * update to make the jumping obstacles move,jump up and down
+	 */
 	@Override
 	public void update() {
 		super.update();;
 		gravity();
 		changeSpriteSheet();
 	}
-
+	
+	
 	void changeSpriteSheet()
 	{
 		timer += GameManager.getDeltaTime();
@@ -50,13 +60,20 @@ public class JumpingObstacle extends Obstacle {
 	}
  
 	
-	// TODO implement the move method
+	/**
+	 * An override method to change the x coordinate to get the
+	 * jumping obstacle to move the the left of the scene
+	 */
 	@Override
 	void move() {
 		x -= speed * GameManager.getDeltaTime();
 	}
 	
 	//gravity constantly increments y coordinate based on yVelocity
+	/**
+	 * Method to apply gravity to the jumping obstacle so it will hit
+	 * the ground after every jump. 
+	 */
 	void gravity() {
 		y -= yVel * GameManager.getDeltaTime(); 
 
@@ -69,7 +86,10 @@ public class JumpingObstacle extends Obstacle {
 		}
 	}
 	
-	// TODO implement the display method 
+	/**
+	 * An override method to display the jumping obstacles animation by using
+	 * Graphic drawImage.
+	 */
 	@Override
 	public void display(Graphics g) {
 		g.drawImage(sprites[spriteIndex], (int)x, (int)y, (int)(width*1.5f), (int)(height*1.5f), null);

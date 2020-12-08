@@ -31,6 +31,9 @@ public class Player extends GameObject implements KeyListener {
 	private BufferedImage sprites[] = new BufferedImage[6];
 	private int spriteIndex = 0;
 	
+	/**
+	 * Constructor of the Player class that uses LoadImage to create animation effect 
+	 */
 	public Player()
 	{
 		for (int i = 0; i < sprites.length; i++)
@@ -42,14 +45,20 @@ public class Player extends GameObject implements KeyListener {
 
 	@Override //do nothing
 	public void keyTyped(KeyEvent arg0) {}
-	     
+	
+	/**
+	 * An override method to get the player jumps when pressing the key
+	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_SPACE)
 			jump();		
 	}
 
-	//update gets called every frame
+	/**
+	 * Method that get called every frame 
+	 * applying gravity on the player
+	 */
 	public void update() {
 		gravity(); 
 		timer += GameManager.getDeltaTime();
@@ -63,13 +72,20 @@ public class Player extends GameObject implements KeyListener {
 		}
 	}
 	
+	/**
+	 * Method to make the player jump
+	 */
 	void jump()
 	{
 		if (y >= GameManager.GROUND_POSITION - HEIGHT) //player is grounded 
 			yVel = JUMPFORCE;  //Instantaneously set Y velocity in jump
 	}
 	 
-	//gravity constantly increments y coordinate based on yVelocity
+	//
+	/**
+	 * method to apply gravity to the player when player is grounded and airborne
+	 * gravity constantly increments y coordinate based on yVelocity
+	 */
 	void gravity() 
 	{
 		y -= yVel * GameManager.getDeltaTime(); 
@@ -83,7 +99,9 @@ public class Player extends GameObject implements KeyListener {
 		}
 	}
 	
-	//render player 
+	/**
+	 * Method to display the player by using Graphics drawImage
+	 */
 	public void display(Graphics g) {
 		g.drawImage(sprites[spriteIndex], (int)x, (int)y, WIDTH, HEIGHT, null);
 	}
