@@ -58,6 +58,9 @@ public class GameManager extends JFrame implements Runnable{
 	
 	public static void main(String[] args) {
 		new GameManager();
+      instance.add(new Scene());
+      new MainMenuScene();
+      instance.setVisible(true);
 	}
 	
 	public GameManager()
@@ -80,13 +83,9 @@ public class GameManager extends JFrame implements Runnable{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false); 
 
-		       
-		//appending the game scene as the active panel
-		add(new Scene());
-		new MainMenuScene();
 		thread = new Thread(this);
 		thread.start();
-	   setVisible(true);
+	   
 	}
 	
 	/**
