@@ -4,6 +4,9 @@ import javax.swing.JPanel;
 import GameObject.*;
 import Systems.GameManager;
 
+/**
+ * Used for rendering all active GameObjects in the game
+ */
 public class Scene extends JPanel {
 	
 	public void paint(Graphics g) {
