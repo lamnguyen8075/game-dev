@@ -21,15 +21,19 @@ import Scenes.Scene;
 
 /**
  * @author Bao
- * The purpose of this class is to manage the entire game loop
- * This class sets the main thread for frame checks and holds
+   The purpose of this class is to manage the entire game loop
+   This class sets the main thread for frame checks and holds
    a list of all GameObjects to be updated in the thread
  
- * This class is 
-   - Keeping track of every GameObject's update calls
+   This class is 
+   - Is the main() class run to start the game
+   - holds a Map of every GameObject for their update() calls & paint()
    - sets pace of the game with scrollSpeed & multipliers
-   - Score to keep track of progress
-   - Increments difficulty by increasing the scroll speed & spawn frequency over time
+   - has many static method getDeltaTime to return current frame time
+   - Variables to adjust the fps Cap & scrollSpeed of the game
+   - Variables to set default window size & relative ground height
+   - The ability to reset & switch scenes
+   
  */
 public class GameManager extends JFrame implements Runnable{
 	
@@ -48,8 +52,7 @@ public class GameManager extends JFrame implements Runnable{
 	private int fps = 60; //cap
 	private Thread thread;
 	private static boolean inGameScene = false;
-	
-	public static GameManager instance;
+	public static GameManager instance; //holds instance of itself for public static calls
 	
 	public static boolean gameIsRunning = true;
 	
@@ -76,15 +79,20 @@ public class GameManager extends JFrame implements Runnable{
 		//GameWindow defaults
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false); 
-		setVisible(true);
+
 		       
 		//appending the game scene as the active panel
 		add(new Scene());
 		new MainMenuScene();
 		thread = new Thread(this);
 		thread.start();
+	   setVisible(true);
 	}
 	
+	/**
+	 * Used for resetting current elapsed Play time (survival Time)
+	 * @param gameScene toggles the state of whether in game or not
+	 */
 	public static void setInGameScene(boolean gameScene)
 	{
 		inGameScene = gameScene;
@@ -92,21 +100,41 @@ public class GameManager extends JFrame implements Runnable{
 			time = 0;
 	}
 	
+	/**
+	 * This adds a GameObject to the collection of things to be updated in the thread
+	 * @param g The GameObject to append to this map
+	 * @param uid the value associated with that key
+	 */
 	public static void addGameObject(GameObject g, int uid)
 	{
 		addQueue.put(g, uid);
 	}
 	
+	  /**
+    * This removes the specific GameObject from the collection to be removed from the thread's update
+    * @param g The key to be removed
+    * @param uid the value associated with that GameObject
+    */
 	public static void removeGameObject(GameObject g, int uid)
 	{
 		removeQueue.put(g, uid);
 	}
 
+   /**
+   * Helper method to get all GameObjects in the set for the Scene to render
+   */
 	public static Set<GameObject> getAllGameObjects() 
 	{
 		return GameManager.gameObjects.keySet();
 	}
 	
+	/**
+	 * Global method used for GameObjects to append themselves to the Window's listener
+	 * This allows the GameObject to handle it's own responsibility for user inputs
+	 * rather than allocating all input responsibilities to the GameManager Class
+	 * @param <T> Generic allows for any type of class to be added
+	 * @param k any GameObject that implements any type of Listener will be added here 
+	 */
 	public static <T> void addListener(T k)
 	{
 		if (k instanceof KeyListener)
@@ -115,6 +143,11 @@ public class GameManager extends JFrame implements Runnable{
 			instance.addMouseListener((MouseListener) k);
 	}
 	
+   /**
+    * Global method used for GameObjects to deallocate themselves from the Window's listener
+    * @param <T> Generic allows for any type of class to be removed
+    * @param k any GameObject that implements any type of Listener will be removed here 
+    */
 	public static <T> void removeListener(T k)
 	{
 		if (k instanceof KeyListener)
@@ -123,13 +156,23 @@ public class GameManager extends JFrame implements Runnable{
 			instance.removeMouseListener((MouseListener) k);
 	}
 	
+	/**
+	 * Removes every every single GameObject from the scene
+	 * used before loading a new scene
+	 */
 	public static void resetScene()
 	{
 		for (GameObject g : gameObjects.keySet())
 			g.destroy();
 	}
 
-	// The thread running the game loop emulating a call every frame
+	/**
+	 * The main thread which runs the game loop emulating a call every frame
+	 * This thread calls update() for every GameObject in it's collection 
+	   which allows the GameObject to handle it's own responsibilities every frame
+	 * This thread also calls repaint() which causes the Scene to rerender itself every frame
+	 * deltaTime & time will be calculated here
+	 */ 
 	@Override
 	public void run() {
 		
@@ -161,7 +204,12 @@ public class GameManager extends JFrame implements Runnable{
 		}
 	}
 	
-	// Thread fail safe to prevent modification of the GameObjects list during its iteration
+	/**
+	 * Thread fail safe to prevent modification of the GameObjects list during its iteration
+	 * The purpose of this method is to make sure the list does not get modified during 
+	   it's iteration of the key set which will generate an out of bounds error for add/removals
+	 * This ensures that the list will get modified before/after looping through the collection
+	 */
 	public void modifyGameObjectList()
 	{
 		for (GameObject g : addQueue.keySet())
