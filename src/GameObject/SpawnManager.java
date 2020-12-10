@@ -11,7 +11,7 @@ import Systems.GameManager;
  */
 public class SpawnManager extends GameObject {
 	
-	float obstacleMinTime = .7f,obstacleMaxTime = 1; //interval of obstacle spawn
+	public static float obstacleMinTime = .7f,obstacleMaxTime = 1; //interval of obstacle spawn
 	float obstacleSpawnTime, obstacleTimer = 0;
 	
 	float cloudSpawnTime = 4.5f; //spawn cloud every 4.5 seconds
