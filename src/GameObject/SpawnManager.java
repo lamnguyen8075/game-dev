@@ -5,7 +5,6 @@ import java.util.Random;
 import Systems.GameManager;
 
 /**
- * @author Bao
  * An invisible GameObject which manages the spawning behavior of Obstacles
  * Spawns obstacles randomly within a minimum and maximum time range
  * Randomizes types of obstacles spawned
@@ -30,17 +29,24 @@ public class SpawnManager extends GameObject {
 		rand = new Random();
 	}
 	
+	/**
+	 * gets called every frame
+	 */
 	@Override
 	public void update() {
 		spawnObstacle();
 		spawnCloud(); //just added for 
 	}
 	
+	/**
+	 * Picks a random interval between two values to spawn an obstacle
+	 * Swaps between spawning a stationary/jumping obstacle
+	 */
 	void spawnObstacle() {
 		obstacleTimer += GameManager.getDeltaTime(); //add time elapsed per frame to obstacleTimer
 		if (obstacleTimer >= obstacleSpawnTime) {
 			
-			//TODO make it randomize coin flip between spawning a stationary vs jumping
+			//swaps between spawning a stationary & jumping obstacle
 			if (obstacleCounter++ % 2 == 0) 
 				spawnStationaryObstacle();
 			else 
@@ -57,6 +63,9 @@ public class SpawnManager extends GameObject {
 		}
 	}
 	
+	/**
+	 * Flips a coin and spawns either a bigger/smaller stationary obstacle
+	 */
 	void spawnStationaryObstacle()
 	{
 		if (rand.nextFloat() > 0.5f)
@@ -65,11 +74,15 @@ public class SpawnManager extends GameObject {
 			new StationaryObstacle(LARGE_OBSTACLE_WIDTH, LARGE_OBSTACLE_HEIGHT);
 	}
 	
+	
 	void spawnJumpingObstacle()
 	{
 		new JumpingObstacle(JUMPING_OBSTACLE_WIDTH, JUMPING_OBSTACLE_HEIGHT);
 	}
 
+	/**
+	 * Spawns a cloud after every 5 seconds
+	 */
 	void spawnCloud() {
 		//spawnCloud() to spawn every 5 seconds new Cloud()
 		cloudTimer += GameManager.getDeltaTime();
@@ -80,6 +93,10 @@ public class SpawnManager extends GameObject {
 		}
  	}
 
-	@Override //displays nothing, invisible GameObject
+	/**
+	 * Method to render this GameObject
+	 * does not display anything, hence an invisible GameObject that exists in the scene
+	 */
+	@Override 
 	public void display(Graphics g) {}
 }
